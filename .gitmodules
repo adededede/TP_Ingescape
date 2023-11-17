@@ -1,0 +1,6 @@
+[submodule "sandbox/IA_tableau/sandbox/IA_tableau/src/imageGenerator"]
+	path = sandbox/IA_tableau/sandbox/IA_tableau/src/imageGenerator
+	url = https://github.com/bruno-sartori/imageGenerator.git
+[submodule "sandbox/IA_tableau/src/imageGenerator"]
+	path = sandbox/IA_tableau/src/imageGenerator
+	url = https://github.com/bruno-sartori/imageGenerator.git
