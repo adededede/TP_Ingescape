@@ -1,7 +1,8 @@
 # TP_Ingescape
 Realisation pour le tp sandbox ingescape (avec le whiteboard)
 
-## Commande pour lancer le projet (attention il faut etre placer dans le dossier Ingescape/sandbox):
+## Commande pour lancer le projet :
+> (attention il faut etre placer dans le dossier Ingescape/sandbox)
 ```
 .\Whiteboard\Whiteboard\Whiteboard.exe --device Wi-Fi --port 15670
 ```
