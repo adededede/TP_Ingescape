@@ -3,6 +3,7 @@ Realisation pour le tp sandbox ingescape (avec le whiteboard)
 
 ## Commande pour lancer le projet :
 > (attention il faut etre placer dans le dossier Ingescape/sandbox)
+
 > lancer aussi la plateforme fournis dans le dossier plateform pour ainsi pouvoir communiquer via le writer dans la chat
 ```
 .\Whiteboard\Whiteboard\Whiteboard.exe --device Wi-Fi --port 15670
