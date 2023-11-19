@@ -431,6 +431,12 @@
                         "hostname": "LAPTOP-4FBC0H2B",
                         "ipAddress": "192.168.1.85",
                         "mac": "D4:6D:6D:8A:1B:AA"
+                    },
+                    {
+                        "commandLine": "C:\\Users\\trica\\TP_Ingescape\\sandbox\\Whiteboard\\Whiteboard\\Whiteboard.exe --device Wi-Fi --port 15670",
+                        "hostname": "LAPTOP-4FBC0H2B",
+                        "ipAddress": "192.168.1.85",
+                        "mac": "D4:6D:6D:8A:1B:AA"
                     }
                 ],
                 "view": {
@@ -438,7 +444,7 @@
                     "isCollapsed": false,
                     "positionX": -208,
                     "positionY": 855,
-                    "positionZ": 2.7199999999999855,
+                    "positionZ": 3.2899999999999734,
                     "width": 252
                 }
             },
@@ -604,7 +610,7 @@
                     "isCollapsed": false,
                     "positionX": -485,
                     "positionY": 730,
-                    "positionZ": 3.1499999999999764,
+                    "positionZ": 3.3799999999999715,
                     "width": 256
                 }
             },
@@ -645,7 +651,7 @@
             },
             {
                 "data": {
-                    "entry 0": "Je veux ouvrir un musée avec 8 tableaux roses"
+                    "entry 0": "Je veux ouvrir un musée avec 0 tableaux roses"
                 },
                 "definition": {
                     "description": "",
@@ -680,7 +686,7 @@
                     "isCollapsed": false,
                     "positionX": -633,
                     "positionY": 926,
-                    "positionZ": 3.1799999999999757,
+                    "positionZ": 3.3899999999999713,
                     "width": 256
                 }
             }

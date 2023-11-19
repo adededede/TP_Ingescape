@@ -9,12 +9,14 @@
 # ia chargé de générer des images
 #
 
+import os
 import signal
 import getopt
 import time
 from pathlib import Path
 import traceback
 import sys
+import cv2
 
 from matplotlib.pyplot import imshow
 import generateur
@@ -37,6 +39,8 @@ long_flag = ["help", "verbose", "interactive_loop", "port=", "device=", "name="]
 ingescape_path = Path("~/Documents/Ingescape").expanduser()
 
 gallerie_tableaux = []
+last_x = 0
+last_y = 0
 
 def print_usage():
     print("Usage example: ", agent_name, " --verbose --port 5670 --device device_name")
@@ -117,8 +121,9 @@ def on_freeze_callback(is_frozen, my_data):
 
 # inputs
 def action_input_callback(iop_type, name, value_type, value, my_data):
+    # print(gallerie_tableaux)
     try:
-        print(f"Input {name} of type {value_type} has been written with value '{value}' and user data '{my_data}'")
+        # print(f"Input {name} of type {value_type} has been written with value '{value}' and user data '{my_data}'")
         agent_object = my_data
         assert isinstance(agent_object, IATableau)
         agent_object.actionI = value
@@ -128,67 +133,115 @@ def action_input_callback(iop_type, name, value_type, value, my_data):
         nb_tableaux = int(informations[2])
         couleur = informations[1]
         # on appel la fonction correspondante 
-        if type_action == "ouverture":
+        if type_action == "ouverture":   
             if len(gallerie_tableaux) == 0:
                 if nb_tableaux==0:
                     # aucun tableaux ajouté au musée crée, on le spécifie dans le chat
-                    igs.service_call("Whiteboard", "chat", "gerant: Ouvrir un musée vide...Quelle drôle d'idée...", "")
-                elif nb_tableaux>12:
+                    igs.service_call("Whiteboard", "chat", "Ouvrir un musée vide...Quelle drôle d'idée...", "")
+                    # creation_tableau("rose",50.0,50.0,128.0,128.0)
+                elif nb_tableaux>6:
                     # aucun tableaux ajouté au musée crée, on le spécifie dans le chat
-                    igs.service_call("Whiteboard", "chat", "gerant: Oh...Notre musée est trop petit pour accueillir tant d'oeuvres ;-; Belle ambition nonobstant...", "")
+                    igs.service_call("Whiteboard", "chat", "Oh...Notre musée est trop petit pour accueillir tant d'oeuvres ;-; Belle ambition nonobstant...", "")
                 else:
                     for i in range(nb_tableaux):
                         if i!=0:
-                            if x>=550.0:
-                                y += 150.0
-                                x = 100.0
+                            if x>=850.0:
+                                y += 350.0
+                                x = 50.0
                             else:    
-                                x += 150.0
+                                x += 400.0
                         else:
                             y = 50.0
-                            x = 100.0
-                        tableau = creation_tableau(couleur,x,y,250,250)
+                            x = 50.0
+                        tableau = creation_tableau(couleur,x,y,128.0,128.0)
                         gallerie_tableaux.append(tableau)
+                    last_x = x
+                    last_y = y 
+            else:        
+                igs.service_call("Whiteboard", "chat", "Notre musée est déjà ouvert.", "")        
 
         elif type_action == "ajout":
-            pass
+            if(len(gallerie_tableaux) == 6):
+                igs.service_call("Whiteboard", "chat", "Le musée est déjà plein mon choux...", "")
+            elif nb_tableaux > 6:
+                igs.service_call("Whiteboard", "chat", "Oh...Notre musée est trop petit pour accueillir tant d'oeuvres...", "")
+            else:
+                if (len(gallerie_tableaux) + nb_tableaux > 6):
+                    reponse = "Il n'y a la place, dans le musée que pour " + str(6-len(gallerie_tableaux)) + " oeuvres."
+                    igs.service_call("Whiteboard", "chat", reponse, "")
+                    nb_tableaux = len(gallerie_tableaux)-6
+                tableau = ajout_tableau(couleur,nb_tableaux)
         elif type_action == "fermeture":
-            pass
-        elif type_action == "suppression":
-            pass
+            igs.service_call("Whiteboard", "chat", "Tres bien si vous le désirez", "")
+            igs.service_call("Whiteboard", "clear", (), "")
+            igs.service_call("Whiteboard", "chat", "Le musée a fermé ses portes.", "")
         else:
             # action non reconnue
+            igs.service_call("Whiteboard", "chat", "Pardon?", "")
             pass
     except:
         print(traceback.format_exc())
+    print(gallerie_tableaux)
+
+def ajout_tableau(couleur,nb_tableaux):
+    for i in range(nb_tableaux):
+        if i!=0:
+            if x>=850.0:
+                y += 350.0
+                x = 50.0
+            else:    
+                x += 400.0
+        else:
+            ligne = ((len(gallerie_tableaux)) // 3) % 2
+            colonne = (len(gallerie_tableaux)) % 3
+
+            x = 50.0 + colonne * 400.0
+            y = 50.0 + ligne * 350.0
+        tableau = creation_tableau(couleur,x,y,128.0,128.0)
+        gallerie_tableaux.append(tableau)
 
 def creation_tableau(couleur,x, y, width, height):
-    if len(couleur)<4:
-        image = generateur.generation_image_sans_couleur()
-    else:
-        image = generateur.generation_image(couleur)
-    image_b64 = image_to_base64(image)
-    # base64, x, y, width, height
-    parametre_image = (image_b64, x, y, width, height)
-    igs.service_call("Whiteboard", "addImage", parametre_image, "")
-    print("AFFICHAGE IMAGE")
-    return parametre_image
+    # # Ancienne version uilisant la generation d'image via IA
+    # if len(couleur)<4:
+    #     image = generateur.generation_image_sans_couleur()
+    # else:
+    #     image = generateur.generation_image(couleur)
+    # sauver_image(image)
+    # image_b64 = image_to_base64()
+    # # print(image_b64)
+    # # base64, x, y, width, height
+    # parametre_image = (image_b64, x, y, width, height)
+    # retour = igs.service_call("Whiteboard", "addImage", parametre_image, "")
+    # # print("AFFICHAGE IMAGE")
+    # return retour
 
+    # # Version 2 en utilisant des Url en fonction
+    image_url = generateur.generation_image_v2(couleur) 
+    # url, x, y
+    parametre_image = (image_url, x, y)
+    retour = igs.service_call("Whiteboard", "addImageFromUrl", parametre_image, "")
+    return retour
 
-def image_to_base64(image_matrix):
-    # Convert the image matrix to a uint8 format (assuming it is in the range [0, 1])
-    image_matrix =  Image.fromarray((image_matrix * 255).astype(np.uint8))
-    # Create a BytesIO object to store the image in memory
-    image_buffer = BytesIO()
-    # Save the PIL Image to the BytesIO object in PNG format
-    image_matrix.save(image_buffer, format='PNG')
-    imshow(image_matrix)
-    # Encode the image in base64
-    base64_encoded = base64.b64encode(image_buffer.getvalue()).decode('utf-8')
-    return base64_encoded
+def image_to_base64():
+    chemin_courant = os.getcwd()
+    with open(chemin_courant+"\\image_courante\\image.png", "rb") as image:
+        image_b64 = base64.b64encode(image.read())
+        # base64_string = image_b64.decode('utf-8')
+        # return base64_string
+        return image_b64
+
+def sauver_image(image):
+    # On converti le type de la données si besoin
+    if image.dtype != np.uint8:
+        image = (image * 255).astype(np.uint8)
+
+    chemin_courant = os.getcwd()
+    # Save the image to a specific destination using OpenCV
+    chemin = chemin_courant+"\\image_courante\\image.png"
+    retour = cv2.imwrite(chemin, cv2.cvtColor(image, cv2.COLOR_RGB2BGR))
+    return retour
 
 if __name__ == "__main__":
-
     # catch SIGINT handler before starting agent
     signal.signal(signal.SIGINT, signal_handler)
     interactive_loop = False

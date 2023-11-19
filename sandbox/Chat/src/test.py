@@ -39,12 +39,24 @@ def creation_musee(texte):
     nb_tableaux = nb_tableaux.replace(" ", "")
     print("CREATION: nb_tableaux:", nb_tableaux, ", couleur:", couleur,".")
 
+def ajout_musee(texte):
+    # le message doit être de type: "(formulation) + (verbe d'ajout) + (formulation) + X +- tableaux +- de couleur + (couleur)"]
+    # on recupere le numero de tableaux a mettre
+    pattern = re.compile(r'[0123456789]{1,}')
+    nb_tableaux = pattern.search(texte)
+    nb_tableaux = nb_tableaux.group(0)
+    # on recupere le theme du musée
+    list_couleur = re.finditer(r'(tableau)|(couleur)',texte)
+    for match in list_couleur:
+        fin = match.end()
+    couleur = texte[fin+1:]
+    couleur = couleur.replace(" ", "")
+    return "ajout-"+couleur+"-"+nb_tableaux
+
 if __name__ == "__main__":
-    print(15.0%3)
-    print(14%5)
-    print(14.0%5)
     # analyse("ouvre un musée de 10 tableaux rouge")
     # analyse("ouvre un musée de 10 tableaux")
     # analyse("je veux ouvrir un musée de 10 tableaux rouge")
     # analyse("je veux ouvrir un musée de 10 tableaux de couleur rouge")
+    print(ajout_musee("Ajoute 1 tableau rouge"))
 

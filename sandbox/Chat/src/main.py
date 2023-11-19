@@ -113,7 +113,7 @@ def lastChatMessage_input_callback(iop_type, name, value_type, value, my_data):
     try:
         agent_object = my_data
         assert isinstance(agent_object, Chat)
-        print(f"Input {name} of type {value_type} has been written with value '{value}' and user data '{my_data}'")
+        # print(f"Input {name} of type {value_type} has been written with value '{value}' and user data '{my_data}'")
         agent_object.lastChatMessageI = value
         # interprétation du message
         analyse(value)
@@ -122,27 +122,18 @@ def lastChatMessage_input_callback(iop_type, name, value_type, value, my_data):
 
 def analyse(texte):
     print(texte)
-    # on regarde si le message vient de nous
-    pattern_gerant = re.compile(r'(gerant:)')
     # on regarde si l'utilisateur veut creer un musee
-    pattern_creation = re.compile(r'(creer)|(crée)|(ouvre)|(ouvrir)')
+    pattern_creation = re.compile(r'(Crée)|(Creer)|(Ouvrir)|(Ouvre)|(creer)|(crée)|(ouvre)|(ouvrir)')
     # ou bien ajouter un tableau au musee
-    pattern_ajout = re.compile(r'(ajout)')
-    # ou bien supprimer un tableau au musee
-    pattern_suppression = re.compile(r'(enleve)|(enlève)|(supprime)')
+    pattern_ajout = re.compile(r'(ajout)|(Ajout)')
     # ou bien fermer le musee
-    pattern_fermeture = re.compile(r'(ferme)') 
-    if pattern_gerant.search(texte):
-        # si c'est un message de nous meme on ne fait rien
-        pass
-    elif pattern_creation.search(texte):
+    pattern_fermeture = re.compile(r'(Ferme)|(ferme)') 
+    if pattern_creation.search(texte):
         creation_musee(texte)
     elif pattern_ajout.search(texte):
-        pass
-    elif pattern_suppression.search(texte):
-        pass
+        ajout_musee(texte)
     elif pattern_fermeture.search(texte):
-        pass
+        fermer_musee(texte)
     else:
         # on ne peut pas interpréter ce message
         igs.info("Votre message n'est pas interprétable, veuillez reformuler svp...")
@@ -165,10 +156,27 @@ def creation_musee(texte):
     couleur = couleur.replace(" ", "")
 
     # on set l'output commande qui va appeler l'écriture sur l'entrée de IA_tableau
-    # igs.service_call("Whiteboard", "clear", (), "")
     igs.output_set_string("commande","ouverture-"+couleur+"-"+nb_tableaux)
-    # igs.service_call("IA_tableau", "creation_tableau_callback", couleur, "")
 
+def ajout_musee(texte):
+    # le message doit être de type: "(formulation) + (verbe d'ajout) + (formulation) + X +- tableaux +- de couleur + (couleur)"]
+    # on recupere le numero de tableaux a mettre
+    pattern = re.compile(r'[0123456789]{1,}')
+    nb_tableaux = pattern.search(texte)
+    nb_tableaux = nb_tableaux.group(0)
+    # on recupere le theme du musée
+    list_couleur = re.finditer(r'(tableau)|(couleur)',texte)
+    for match in list_couleur:
+        fin = match.end()
+    couleur = texte[fin+1:]
+    couleur = couleur.replace(" ", "")
+
+    # on set l'output commande qui va appeler l'écriture sur l'entrée de IA_tableau
+    igs.output_set_string("commande","ajout-"+couleur+"-"+nb_tableaux)
+
+def fermer_musee(texte):
+    # on set l'output commande qui va appeler l'écriture sur l'entrée de IA_tableau
+    igs.output_set_string("commande","fermeture-vide-0")
 
 if __name__ == "__main__":
 
