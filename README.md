@@ -14,3 +14,4 @@ python .\IA_tableau\src\main.py IA_tableau --device Wi-Fi --port 15670
 ```
 
 ### Il faut modifier les chemins dans le code du generateur
+> pas nécessaire vu que dans cette dernière version on ne génère plus les images via IA
