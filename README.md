@@ -1,5 +1,5 @@
 # TP_Ingescape
-Realisation pour le tp sandbox ingescape (avec le whiteboard) : ~~Génération d'image via une IA~~ Utilisation d'url d'images puis affichage d'image via chat selon les couleurs des tableaux.
+Realisation pour le tp sandbox ingescape (avec le whiteboard) : ~~Génération d'image via une IA~~ Utilisation d'url d'images puis affichage d'image via chat selon les couleurs, le nombre de tableaux  mais aussi l'action indiqué.
 
 ## Commande pour lancer le projet :
 > (attention il faut etre placer dans le dossier Ingescape/sandbox)
